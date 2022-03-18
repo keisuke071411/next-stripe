@@ -1,0 +1,28 @@
+:root {
+  --yellow: #ffbd00;
+  --red: #eb5353;
+
+  --black: #212121;
+  --black-lighten-1: #757575;
+  --black-lighten-2: #bdbdbd;
+  --black-lighten-3: #e0e0e0;
+  --black-lighten-4: #fbfbfb;
+
+  --white: #ffffff;
+  --gray: #ececec;
+
+  color: var(--black);
+
+  --montserrat: 'Montserrat';
+  --noto-sans-jp: 'Noto Sans JP';
+  --noto-serif-jp: 'Noto Serif JP';
+
+  font-family: var(--noto-sans-jp), sans-serif;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  --z-index--high: 100;
+  --z-index--medium: 10;
+  --z-index--low: 5;
+}
