@@ -1,7 +1,15 @@
 import type { NextPage } from "next";
 
 const Home: NextPage = (): JSX.Element => {
-  return <h1>Hello World</h1>;
+  return (
+    <form action="/api/stripeCheckOut" method="POST">
+      <section>
+        <button type="submit" role="link">
+          支払う
+        </button>
+      </section>
+    </form>
+  );
 };
 
 export default Home;
