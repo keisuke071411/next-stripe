@@ -7,6 +7,14 @@ interface CurrentUser {
   uid: string;
   displayName: string;
   imagePath: string;
+  subscriptionStatus:
+    | "incomplete"
+    | "incomplete_expired"
+    | "trialing"
+    | "active"
+    | "past_due"
+    | "canceled"
+    | "unpaid";
 }
 
 export interface AuthState {
@@ -32,10 +40,11 @@ export const AuthInit = () => {
         return;
       }
 
-      const currentUser = {
+      let currentUser: CurrentUser = {
         uid: user.uid,
         displayName: user.displayName || "",
-        imagePath: user.photoURL || ""
+        imagePath: user.photoURL || "",
+        subscriptionStatus: "incomplete"
       };
 
       try {
@@ -45,9 +54,19 @@ export const AuthInit = () => {
           await setDoc(doc(db, "user", currentUser.uid), {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
-            imagePath: currentUser.imagePath
+            imagePath: currentUser.imagePath,
+            subscriptionStatus: currentUser.subscriptionStatus
           });
+
+          return setAuthState({ isLoading: false, currentUser });
         }
+
+        currentUser = {
+          uid: docRef.data()?.uid,
+          displayName: docRef.data()?.displayName || "",
+          imagePath: docRef.data()?.imagePath || "",
+          subscriptionStatus: docRef.data()?.subscriptionStatus
+        };
 
         setAuthState({ isLoading: false, currentUser });
       } catch (err) {

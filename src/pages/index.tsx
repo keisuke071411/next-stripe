@@ -32,7 +32,11 @@ const Home: NextPage = (): JSX.Element => {
         <div>
           <p>id: {currentUser.uid}</p>
           <p>userName: {currentUser.displayName}</p>
+          <p>userName: {currentUser.subscriptionStatus}</p>
           <img src={currentUser.imagePath} alt={currentUser.displayName} />
+          {currentUser.subscriptionStatus === "active" && (
+            <p>あなたは有料会員です</p>
+          )}
         </div>
       ) : (
         <button onClick={signUp}>ログイン</button>
