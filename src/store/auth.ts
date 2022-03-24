@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { atom, useSetRecoilState } from "recoil";
-import { firebaseAuth } from "~/infra/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db, firebaseAuth } from "~/infra/firebase";
 
 interface CurrentUser {
   uid: string;
@@ -31,12 +32,22 @@ export const AuthInit = () => {
         return;
       }
 
+      const currentUser = {
+        uid: user.uid,
+        displayName: user.displayName || "",
+        imagePath: user.photoURL || ""
+      };
+
       try {
-        const currentUser = {
-          uid: user.uid,
-          displayName: user.displayName || "",
-          imagePath: user.photoURL || ""
-        };
+        const docRef = await getDoc(doc(db, "user", currentUser.uid));
+
+        if (!docRef.data()) {
+          await setDoc(doc(db, "user", currentUser.uid), {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            imagePath: currentUser.imagePath
+          });
+        }
 
         setAuthState({ isLoading: false, currentUser });
       } catch (err) {
