@@ -3,6 +3,9 @@ import Head from "next/head";
 import { DefaultSeo } from "next-seo";
 import "../../styles/reset.css";
 import "../../styles/global.css";
+import { RecoilRoot } from "recoil";
+import { AuthInit } from "~/store/auth";
+import { ApiProvider } from "~/context/ApiContext";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
@@ -32,7 +35,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           images: [{ url: `ogp.jpg` }]
         }}
       />
-      <Component {...pageProps} />
+      <ApiProvider>
+        <RecoilRoot>
+          <AuthInit />
+          <Component {...pageProps} />
+        </RecoilRoot>
+      </ApiProvider>
     </>
   );
 };

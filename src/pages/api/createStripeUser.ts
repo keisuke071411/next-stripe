@@ -7,26 +7,14 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method !== "POST") throw new Error();
 
-    const session = await stripe.checkout.sessions.create({
-      customer: req.body,
-      line_items: [
-        {
-          price: process.env.NEXT_PUBLIC_STRIPE_API_KEY,
-          quantity: 1
-        }
-      ],
+    const customer = await stripe.customers.create();
 
-      mode: "subscription",
-      success_url: `${req.headers.origin}/success/?success=true`,
-      cancel_url: `${req.headers.origin}/?canceled=true`
-    });
-
-    res.status(200).json({ url: session.url });
+    res.status(200).json({ customer: customer });
   } catch (err: unknown) {
-    console.log(err);
-
     if (err instanceof Error) {
       res.status(500).json(err.message);
     }
+
+    console.log(err);
   }
 }
