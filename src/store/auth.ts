@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { atom, useSetRecoilState } from "recoil";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, firebaseAuth } from "~/infra/firebase";
+import { ApiContext } from "~/context/ApiContext";
 
-interface CurrentUser {
+export interface CurrentUser {
   uid: string;
   displayName: string;
   imagePath: string;
@@ -15,6 +16,7 @@ interface CurrentUser {
     | "past_due"
     | "canceled"
     | "unpaid";
+  stripeCustomerId: string;
 }
 
 export interface AuthState {
@@ -32,6 +34,7 @@ export const authState = atom<AuthState>({
 
 export const AuthInit = () => {
   const setAuthState = useSetRecoilState(authState);
+  const { stripeApi } = useContext(ApiContext);
 
   useEffect(() => {
     const unSub = firebaseAuth.onAuthStateChanged(async (user) => {
@@ -44,18 +47,23 @@ export const AuthInit = () => {
         uid: user.uid,
         displayName: user.displayName || "",
         imagePath: user.photoURL || "",
-        subscriptionStatus: "incomplete"
+        subscriptionStatus: "incomplete",
+        stripeCustomerId: ""
       };
 
       try {
         const docRef = await getDoc(doc(db, "user", currentUser.uid));
 
         if (!docRef.data()) {
+          const res = await stripeApi.createStripeUser(currentUser);
+          const { customer } = await res.json();
+
           await setDoc(doc(db, "user", currentUser.uid), {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             imagePath: currentUser.imagePath,
-            subscriptionStatus: currentUser.subscriptionStatus
+            subscriptionStatus: currentUser.subscriptionStatus,
+            stripeCustomerId: customer.id
           });
 
           return setAuthState({ isLoading: false, currentUser });
@@ -65,7 +73,8 @@ export const AuthInit = () => {
           uid: docRef.data()?.uid,
           displayName: docRef.data()?.displayName || "",
           imagePath: docRef.data()?.imagePath || "",
-          subscriptionStatus: docRef.data()?.subscriptionStatus
+          subscriptionStatus: docRef.data()?.subscriptionStatus,
+          stripeCustomerId: docRef.data()?.stripeCustomerId
         };
 
         setAuthState({ isLoading: false, currentUser });
