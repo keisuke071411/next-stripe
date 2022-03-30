@@ -1,38 +1,10 @@
-import { initializeApp, App } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
 import { Request, Response, https } from "firebase-functions";
+import { db } from "./handlers/firebase";
 import { CurrentUser } from "./types";
 
-// exports.stripe_webhook = https.onRequest(async (request: Request, response: Response) => {
-//   const app: App = initializeApp();
-//   console.log(app);
-//   console.log(request);
-//   console.log(response);
-
-//   const firestore = getFirestore();
-//   const snapshot = await firestore
-//     .collection("user")
-//     .where("stripeCustomerId", "==", "cus_LPNd0BryLYpYXf")
-//     .get();
-
-//   const user = snapshot.docs.map((doc) => doc.data() as CurrentUser);
-
-//   await firestore
-//     .collection("user")
-//     .doc(user[0].uid)
-//     .update({
-//       subscriptionStatus: "active",
-//     });
-// });
-
 exports.stripe_webhook = https.onRequest(
-  async (request: Request, response: Response | any) => {
-    const app: App = initializeApp();
-    const firestore = getFirestore();
-
+  async (request: Request, response: Response): Promise<void> => {
     const event = request.body;
-
-    console.log("options", app.options);
 
     try {
       switch (event.type) {
@@ -43,29 +15,24 @@ exports.stripe_webhook = https.onRequest(
         //   break;
         // }
         case "customer.subscription.created": {
-          // const subscriptionCreate = event.data.object;
-          // console.log("subscription_create", subscriptionCreate.customer);
+          const stripeCustomerId = event.data.object.customer;
 
-          const snapshot = await firestore
+          if (!stripeCustomerId)
+            throw new Error("Failed to get stripeCustomerId");
+
+          const snapshot = await db
             .collection("user")
-            .where("stripeCustomerId", "==", "cus_LPNd0BryLYpYXf")
+            .where("stripeCustomerId", "==", stripeCustomerId)
             .get();
 
-          console.log("snapshot", snapshot);
+          if (!snapshot) throw new Error("Corresponding user does not exist");
 
-          const user = snapshot.docs.map((doc) => {
-            console.log("doc", doc.data());
-            return doc.data() as CurrentUser;
-          });
+          const user = snapshot.docs.map((doc) => doc.data() as CurrentUser);
 
-          console.log("user", user[0]);
-          console.log("userId", user[0].uid);
-
-          await firestore.collection("user").doc("cus_LPRP86cXWr0dgC").update({
+          await db.collection("user").doc(user[0].uid).update({
             subscriptionStatus: "active",
           });
 
-          // console.log("test", test);
           response.json({ received: true });
           break;
         }
@@ -89,7 +56,7 @@ exports.stripe_webhook = https.onRequest(
         // }
         default: {
           // 想定していないイベントが通知された場合
-          return response.status(400).end();
+          response.status(400).end();
         }
       }
     } catch (error) {
