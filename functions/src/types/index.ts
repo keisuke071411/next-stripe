@@ -1,5 +1,6 @@
 export interface CurrentUser {
   uid: string;
+  email: string;
   displayName: string;
   imagePath: string;
   subscriptionStatus:
