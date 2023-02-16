@@ -1,7 +1,7 @@
 import { createContext, ReactNode } from "react";
 import { StripeApi } from "~/api/stripeApi";
 
-const apiUrl = "/api";
+const apiUrl = process.env.NEXT_PUBLIC_BASEURL as string;
 
 export const stripeApi = new StripeApi(apiUrl);
 
