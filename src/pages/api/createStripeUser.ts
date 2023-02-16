@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import Stripe from "stripe";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string, {
+  apiVersion: "2022-11-15"
+});
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
