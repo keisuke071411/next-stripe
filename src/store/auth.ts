@@ -6,6 +6,7 @@ import { ApiContext } from "~/context/ApiContext";
 
 export interface CurrentUser {
   uid: string;
+  email: string;
   displayName: string;
   imagePath: string;
   subscriptionStatus:
@@ -45,6 +46,7 @@ export const AuthInit = () => {
 
       let currentUser: CurrentUser = {
         uid: user.uid,
+        email: user.email || "",
         displayName: user.displayName || "",
         imagePath: user.photoURL || "",
         subscriptionStatus: "incomplete",
@@ -60,6 +62,7 @@ export const AuthInit = () => {
 
           await setDoc(doc(db, "user", currentUser.uid), {
             uid: currentUser.uid,
+            email: currentUser.email,
             displayName: currentUser.displayName,
             imagePath: currentUser.imagePath,
             subscriptionStatus: currentUser.subscriptionStatus,
@@ -71,8 +74,9 @@ export const AuthInit = () => {
 
         currentUser = {
           uid: docRef.data()?.uid,
-          displayName: docRef.data()?.displayName || "",
-          imagePath: docRef.data()?.imagePath || "",
+          email: docRef.data()?.email,
+          displayName: docRef.data()?.displayName,
+          imagePath: docRef.data()?.imagePath,
           subscriptionStatus: docRef.data()?.subscriptionStatus,
           stripeCustomerId: docRef.data()?.stripeCustomerId
         };

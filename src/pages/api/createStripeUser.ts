@@ -7,7 +7,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method !== "POST") throw new Error();
 
-    const customer = await stripe.customers.create();
+    const customer = await stripe.customers.create({
+      name: req.body.displayName,
+      email: req.body.email
+    });
 
     res.status(200).json({ customer: customer });
   } catch (err: unknown) {
