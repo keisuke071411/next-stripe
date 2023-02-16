@@ -9,6 +9,23 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method !== "POST") throw new Error();
 
+    // 1. 生成したCheckout URLを一覧で取得
+    const { data: sessionList } = await stripe.checkout.sessions.list({
+      customer: req.body
+    });
+
+    // 2. 現在有効中のURLをフィルターする
+    const openSessionList = sessionList.filter(
+      (sessionItem) => sessionItem.status === "open"
+    );
+
+    // 3. 有効中のURLを無効化する
+    await Promise.all(
+      openSessionList.map((openSessionItem) =>
+        stripe.checkout.sessions.expire(openSessionItem.id)
+      )
+    );
+
     const session = await stripe.checkout.sessions.create({
       customer: req.body,
       line_items: [
