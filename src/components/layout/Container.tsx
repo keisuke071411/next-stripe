@@ -2,8 +2,9 @@ import { css } from "@emotion/react";
 import { ComponentPropsWithRef } from "react";
 
 const container = css`
-  max-width: 1240px;
+  max-width: 1024px;
   margin: 0 auto;
+  padding: 0 16px;
 `;
 
 export const Container = ({

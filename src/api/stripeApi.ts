@@ -34,4 +34,17 @@ export class StripeApi {
 
     return res;
   }
+
+  async getPaymentList(stripeCustomerId: string) {
+    const res = await fetch(`${this.apiUrl}/getPaymentList`, {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "text/plain"
+      },
+      body: stripeCustomerId
+    });
+
+    return res;
+  }
 }
