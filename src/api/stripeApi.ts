@@ -47,4 +47,16 @@ export class StripeApi {
 
     return res;
   }
+
+  async getProductList() {
+    const res = await fetch(`${this.apiUrl}/getProductList`, {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "text/plain"
+      }
+    });
+
+    return res;
+  }
 }
