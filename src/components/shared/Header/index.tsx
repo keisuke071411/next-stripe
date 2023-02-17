@@ -22,7 +22,7 @@ export const Header = ({ ...props }: ComponentPropsWithRef<"header">) => {
     try {
       await signInWithPopup(firebaseAuth, provider);
 
-      push("/dashboard");
+      push("/");
     } catch (err) {
       console.error(err);
     }

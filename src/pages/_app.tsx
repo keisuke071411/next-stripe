@@ -6,6 +6,7 @@ import { RecoilRoot } from "recoil";
 import { AuthInit } from "~/store/auth";
 import { ApiProvider } from "~/context/ApiContext";
 import { NextUIProvider } from "@nextui-org/react";
+import { ResetDropdownState } from "~/libs/Dropdown/dropdownState";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
@@ -27,6 +28,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <RecoilRoot>
           <NextUIProvider>
             <AuthInit />
+            <ResetDropdownState />
             <Component {...pageProps} />
           </NextUIProvider>
         </RecoilRoot>

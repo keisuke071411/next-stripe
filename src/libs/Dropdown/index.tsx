@@ -45,12 +45,14 @@ const nav = css`
 
 const item = css`
   width: 100%;
-  height: 32px;
+  height: 40px;
   margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.5s;
 
-  :first-child {
+  :first-of-type {
     border-radius: 8px 8px 0 0;
   }
 
