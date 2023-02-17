@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { useRouter } from "next/router";
 import { css } from "@emotion/react";
-import { Table } from "@nextui-org/react";
+import { Table, Loading } from "@nextui-org/react";
 import { useRecoilValue } from "recoil";
 import { authState } from "~/store/auth";
 import { Container } from "~/components/layout/Container";
@@ -18,7 +18,7 @@ export const DashBoardPageTemplate = ({
   const { currentUser, isLoading } = useRecoilValue(authState);
   const { push } = useRouter();
 
-  if (isLoading) return <p>now loading...</p>;
+  if (isLoading) return <Loading size="xl" />;
 
   if (!currentUser) {
     push("/");

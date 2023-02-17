@@ -1,6 +1,7 @@
 export const colors = {
   yellow: "var(--yellow)",
   red: "var(--red)",
+  green: "var(--green)",
   black: {
     primary: "var(--black)",
     lighten: {
