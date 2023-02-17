@@ -1,12 +1,16 @@
+import { Fragment } from "react";
+import { useRouter } from "next/router";
+import { css } from "@emotion/react";
+import { Table } from "@nextui-org/react";
 import { useRecoilValue } from "recoil";
 import { authState } from "~/store/auth";
-import { Table } from "@nextui-org/react";
-import { formatUnixTimeDate } from "~/utils/formatUnixTimeDate";
+import { Container } from "~/components/layout/Container";
+import { DashBoardPageProps } from "~/pages/dashboard";
+import { FlexContainer } from "~/components/layout/FlexContainer";
 import { PAYMENT_STATUS } from "./constants";
 import { convertToMoney } from "~/utils/convertToMoney";
-import { DashBoardPageProps } from "~/pages/dashboard";
-import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { formatUnixTimeDate } from "~/utils/formatUnixTimeDate";
+import { colors } from "styles/themes";
 
 export const DashBoardPageTemplate = ({
   paymentList
@@ -22,16 +26,24 @@ export const DashBoardPageTemplate = ({
   }
 
   return (
-    <main>
-      <div>
-        <p>id: {currentUser.uid}</p>
-        <p>userName: {currentUser.displayName}</p>
-        <p>status: {currentUser.subscriptionStatus}</p>
-        <img src={currentUser.imagePath} alt={currentUser.displayName} />
+    <main css={main}>
+      <Container>
+        <FlexContainer gap={20} style={{ marginBottom: 32 }}>
+          <img src={currentUser.imagePath} alt={currentUser.displayName} />
+          <FlexContainer flexDirection="column" justifyContent="center">
+            <h1 css={name}>{currentUser.displayName}</h1>
+            <p css={account}>@{currentUser.uid}</p>
+            <p css={role}>
+              あなたは
+              {currentUser.subscriptionStatus === "active" ? "有料" : "無料"}
+              会員です
+            </p>
+          </FlexContainer>
+        </FlexContainer>
+        <p css={label}>注文履歴</p>
         <Table
           aria-label="Example static collection table"
           css={{
-            maxWidth: "896px",
             height: "auto",
             fontSize: "1.4rem"
           }}
@@ -55,7 +67,37 @@ export const DashBoardPageTemplate = ({
             ))}
           </Table.Body>
         </Table>
-      </div>
+      </Container>
     </main>
   );
 };
+
+const main = css`
+  min-height: 100vh;
+  padding: 80px 0;
+  background: ${colors.black.lighten[4]};
+`;
+
+const name = css`
+  margin-bottom: 8px;
+  font-size: 2.4rem;
+  line-height: 2.4rem;
+`;
+
+const account = css`
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  color: ${colors.black.lighten[2]};
+`;
+
+const role = css`
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+`;
+
+const label = css`
+  font-size: 2em;
+  line-height: 2em;
+  font-weight: bold;
+`;
