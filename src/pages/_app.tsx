@@ -6,6 +6,7 @@ import "../../styles/global.css";
 import { RecoilRoot } from "recoil";
 import { AuthInit } from "~/store/auth";
 import { ApiProvider } from "~/context/ApiContext";
+import { NextUIProvider } from "@nextui-org/react";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
@@ -37,8 +38,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       />
       <ApiProvider>
         <RecoilRoot>
-          <AuthInit />
-          <Component {...pageProps} />
+          <NextUIProvider>
+            <AuthInit />
+            <Component {...pageProps} />
+          </NextUIProvider>
         </RecoilRoot>
       </ApiProvider>
     </>
