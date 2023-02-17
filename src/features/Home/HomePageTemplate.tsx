@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { useRouter } from "next/router";
 import { css } from "@emotion/react";
 import { Loading } from "@nextui-org/react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -16,14 +15,7 @@ export const HomePageTemplate = (): JSX.Element => {
   const { currentUser, isLoading } = useRecoilValue(authState);
   const [isOpen, setOpen] = useRecoilState(dropdownState);
 
-  const { push } = useRouter();
-
   if (isLoading) return <Loading size="xl" />;
-
-  if (!currentUser) {
-    push("/");
-    return <Fragment />;
-  }
 
   const handleClick = async () => {
     try {
@@ -51,10 +43,14 @@ export const HomePageTemplate = (): JSX.Element => {
       )}
       <main css={main}>
         <FlexContainer justifyContent="center" alignItems="center">
-          {currentUser.subscriptionStatus === "active" ? (
-            <p>あなたは有料会員です</p>
+          {currentUser ? (
+            currentUser.subscriptionStatus === "active" ? (
+              <p>あなたは有料会員です</p>
+            ) : (
+              <button onClick={handleClick}>課金する</button>
+            )
           ) : (
-            <button onClick={handleClick}>課金する</button>
+            <p>まずはログインから始めましょう！</p>
           )}
         </FlexContainer>
       </main>

@@ -47,7 +47,9 @@ export const Header = ({ ...props }: ComponentPropsWithRef<"header">) => {
             />
           </button>
         ) : (
-          <button onClick={login}>ログイン</button>
+          <button onClick={login} css={text}>
+            ログイン
+          </button>
         )}
       </FlexContainer>
     </header>
@@ -76,4 +78,10 @@ const icon = css`
   position: relative;
   border: 2px solid ${colors.white};
   border-radius: 50%;
+`;
+
+const text = css`
+  color: ${colors.white};
+  font-size: 1.4rem;
+  font-weight: bold;
 `;
