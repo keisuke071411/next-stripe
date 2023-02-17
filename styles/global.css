@@ -10,12 +10,13 @@
 
   --white: #ffffff;
   --gray: #ececec;
+  --green: #06c755;
 
   color: var(--black);
 
-  --montserrat: 'Montserrat';
-  --noto-sans-jp: 'Noto Sans JP';
-  --noto-serif-jp: 'Noto Serif JP';
+  --montserrat: "Montserrat";
+  --noto-sans-jp: "Noto Sans JP";
+  --noto-serif-jp: "Noto Serif JP";
 
   font-family: var(--noto-sans-jp), sans-serif;
 
