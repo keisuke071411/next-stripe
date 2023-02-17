@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { css } from "@emotion/react";
+import { Loading } from "@nextui-org/react";
 import { useRecoilValue } from "recoil";
 import { authState } from "~/store/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -12,7 +13,7 @@ export const HomePageTemplate = (): JSX.Element => {
   const { currentUser, isLoading } = useRecoilValue(authState);
   const { push } = useRouter();
 
-  if (isLoading) return <p>now loading...</p>;
+  if (isLoading) return <Loading size="xl" />;
 
   const handleClick = async () => {
     try {
