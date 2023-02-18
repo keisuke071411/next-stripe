@@ -9,9 +9,9 @@ interface ProductListProps {
 
 export const ProductList = ({ productList, handleClick }: ProductListProps) => {
   return (
-    <Grid.Container gap={2} justify="flex-start">
+    <Grid.Container gap={6} justify="flex-start">
       {productList.map((product) => (
-        <Grid xs={6} sm={3} key={product.id}>
+        <Grid xs={6} sm={4} key={product.id}>
           <Card
             isPressable
             onPressStart={() => handleClick(product.default_price as string)}

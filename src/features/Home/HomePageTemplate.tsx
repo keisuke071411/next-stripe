@@ -1,12 +1,11 @@
 import { Fragment } from "react";
 import { css } from "@emotion/react";
-import { Loading } from "@nextui-org/react";
+import { Container, Loading } from "@nextui-org/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authState } from "~/store/auth";
 import { dropdownState } from "~/libs/Dropdown/dropdownState";
 import { stripeApi } from "~/context/ApiContext";
 import { Dropdown } from "~/libs/Dropdown";
-import { FlexContainer } from "~/components/layout/FlexContainer";
 import { Header } from "~/components/shared/Header";
 import { Overlay } from "~/components/shared/Overlay";
 import { ProductList } from "./components/ProductList";
@@ -47,9 +46,9 @@ export const HomePageTemplate = ({
         </Overlay>
       )}
       <main css={main}>
-        <FlexContainer justifyContent="center" alignItems="center">
+        <Container>
           <ProductList productList={productList} handleClick={handleClick} />
-        </FlexContainer>
+        </Container>
       </main>
     </Fragment>
   );
