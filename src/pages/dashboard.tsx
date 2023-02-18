@@ -13,15 +13,31 @@ export const getServerSideProps = async () => {
   );
   const paymentList = await res.json();
 
+  const response = await stripeApi.getSubscriptionList(
+    process.env.NEXT_PUBLIC_CUSTOMER_ID as string
+  );
+  const subscriptionList = await response.json();
+
+  console.log(subscriptionList);
+
   return {
-    props: { paymentList: paymentList.data as Stripe.Checkout.Session[] }
+    props: {
+      paymentList: paymentList.data as Stripe.Checkout.Session[],
+      subscriptionList: subscriptionList.data as Stripe.Subscription[]
+    }
   };
 };
 
 const DashBoardPage: NextPage<DashBoardPageProps> = ({
-  paymentList
+  paymentList,
+  subscriptionList
 }): JSX.Element => {
-  return <DashBoardPageTemplate paymentList={paymentList} />;
+  return (
+    <DashBoardPageTemplate
+      paymentList={paymentList}
+      subscriptionList={subscriptionList}
+    />
+  );
 };
 
 export default DashBoardPage;
