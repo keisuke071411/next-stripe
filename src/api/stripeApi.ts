@@ -1,5 +1,10 @@
 import { CurrentUser } from "~/store/auth";
 
+interface CreateCheckOutRequest {
+  customerId: string;
+  priceId: string;
+}
+
 export class StripeApi {
   private apiUrl: string;
 
@@ -22,14 +27,14 @@ export class StripeApi {
     return res;
   }
 
-  async checkOutForStripe(stripeCustomerId: string) {
+  async checkOutForStripe(createCheckOutRequest: CreateCheckOutRequest) {
     const res = await fetch(`${this.apiUrl}/stripeCheckOut`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",
-        "Content-Type": "text/plain"
+        "Content-Type": "application/json"
       },
-      body: stripeCustomerId
+      body: JSON.stringify(createCheckOutRequest)
     });
 
     return res;
