@@ -77,4 +77,17 @@ export class StripeApi {
 
     return res;
   }
+
+  async cancelSubscription(stripeCustomerId: string) {
+    const res = await fetch(`${this.apiUrl}/cancelSubscription`, {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "text/plain"
+      },
+      body: stripeCustomerId
+    });
+
+    return res;
+  }
 }
