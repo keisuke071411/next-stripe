@@ -1,24 +1,50 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
-import { Loading } from "@nextui-org/react";
-import { useRecoilValue } from "recoil";
-import { authState } from "~/store/auth";
+import { CurrentUser } from "~/store/auth";
 import { Container } from "~/components/layout/Container";
-import { DashBoardPageProps } from "~/pages/dashboard";
 import { FlexContainer } from "~/components/layout/FlexContainer";
 import { PaymentTable } from "./components/PaymentTable";
 import { SubscriptionTable } from "./components/SubscriptionTable";
 import { colors } from "styles/themes";
+import { stripeApi } from "~/context/ApiContext";
+import Stripe from "stripe";
+
+interface DashBoardPageTemplateProps {
+  currentUser: CurrentUser;
+}
 
 export const DashBoardPageTemplate = ({
-  paymentList,
-  subscriptionList
-}: DashBoardPageProps): JSX.Element => {
-  const { currentUser, isLoading } = useRecoilValue(authState);
+  currentUser
+}: DashBoardPageTemplateProps): JSX.Element => {
   const { push } = useRouter();
 
-  if (isLoading) return <Loading size="xl" />;
+  const [paymentList, setPaymentList] = useState<Stripe.Checkout.Session[]>([]);
+  const [subscriptionList, setSubscriptionList] = useState<
+    Stripe.Subscription[]
+  >([]);
+
+  const initialFetch = async () => {
+    try {
+      const response = await stripeApi.getSubscriptionList(
+        currentUser.stripeCustomerId as string
+      );
+      const subscriptionList = await response.json();
+      setSubscriptionList(subscriptionList.data);
+
+      const res = await stripeApi.getPaymentList(
+        currentUser.stripeCustomerId as string
+      );
+      const paymentList = await res.json();
+      setPaymentList(paymentList.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    initialFetch();
+  }, []);
 
   if (!currentUser) {
     push("/");
