@@ -9,16 +9,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method !== "POST") throw new Error();
 
-    const data = await stripe.checkout.sessions.list({
-      limit: 100,
-      customer: req.body
-    });
+    const data = await stripe.invoices.retrieve(req.body);
 
-    res
-      .status(200)
-      .json({
-        data: data.data.filter((item) => item.payment_status === "paid")
-      });
+    res.status(200).json({ pdf: data.invoice_pdf });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json(error.message);
