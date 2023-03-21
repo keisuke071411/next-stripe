@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { css } from "@emotion/react";
-import { Container, Loading } from "@nextui-org/react";
+import { Container } from "@nextui-org/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authState } from "~/store/auth";
 import { dropdownState } from "~/libs/Dropdown/dropdownState";
@@ -11,6 +11,7 @@ import { Overlay } from "~/components/shared/Overlay";
 import { ProductList } from "./components/ProductList";
 import { colors } from "styles/themes";
 import { HomePageProps } from "~/pages";
+import { LoadingScreen } from "~/components/shared/LoadingScreen";
 
 export const HomePageTemplate = ({
   productList
@@ -18,7 +19,7 @@ export const HomePageTemplate = ({
   const { currentUser, isLoading } = useRecoilValue(authState);
   const [isOpen, setOpen] = useRecoilState(dropdownState);
 
-  if (isLoading) return <Loading size="xl" />;
+  if (isLoading) return <LoadingScreen />;
 
   const handleClick = async (priceId: string) => {
     try {
