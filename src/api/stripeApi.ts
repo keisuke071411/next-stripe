@@ -90,4 +90,17 @@ export class StripeApi {
 
     return res;
   }
+
+  async getReceipt(invoiceId: string) {
+    const res = await fetch(`${this.apiUrl}/getReceipt`, {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "text/plain"
+      },
+      body: invoiceId
+    });
+
+    return res;
+  }
 }
