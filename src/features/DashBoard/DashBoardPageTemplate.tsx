@@ -1,14 +1,15 @@
 import { Fragment, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
+import Stripe from "stripe";
+import { stripeApi } from "~/context/ApiContext";
 import { CurrentUser } from "~/store/auth";
 import { Container } from "~/components/layout/Container";
 import { FlexContainer } from "~/components/layout/FlexContainer";
 import { PaymentTable } from "./components/PaymentTable";
 import { SubscriptionTable } from "./components/SubscriptionTable";
 import { colors } from "styles/themes";
-import { stripeApi } from "~/context/ApiContext";
-import Stripe from "stripe";
+import { StripePayment } from "~/pages/api/getPaymentList";
 
 interface DashBoardPageTemplateProps {
   currentUser: CurrentUser;
@@ -19,7 +20,7 @@ export const DashBoardPageTemplate = ({
 }: DashBoardPageTemplateProps): JSX.Element => {
   const { push } = useRouter();
 
-  const [paymentList, setPaymentList] = useState<Stripe.Checkout.Session[]>([]);
+  const [paymentList, setPaymentList] = useState<StripePayment[]>([]);
   const [subscriptionList, setSubscriptionList] = useState<
     Stripe.Subscription[]
   >([]);

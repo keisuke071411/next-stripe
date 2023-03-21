@@ -1,12 +1,12 @@
 import { Button, Table } from "@nextui-org/react";
-import Stripe from "stripe";
 import { stripeApi } from "~/context/ApiContext";
+import { StripePayment } from "~/pages/api/getPaymentList";
 import { convertToMoney } from "~/utils/convertToMoney";
 import { formatUnixTimeDate } from "~/utils/formatUnixTimeDate";
 import { PAYMENT_STATUS } from "../constants";
 
 interface PaymentTableProps {
-  paymentList: Stripe.Checkout.Session[];
+  paymentList: StripePayment[];
 }
 
 export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
@@ -31,6 +31,7 @@ export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
       }}
     >
       <Table.Header>
+        <Table.Column>商品名</Table.Column>
         <Table.Column>金額</Table.Column>
         <Table.Column>ステータス</Table.Column>
         <Table.Column>作成日</Table.Column>
@@ -39,6 +40,7 @@ export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
       <Table.Body>
         {paymentList.map((payment) => (
           <Table.Row key={payment.id}>
+            <Table.Cell>{payment.productList[0].description}</Table.Cell>
             <Table.Cell>{convertToMoney(payment.amount_total)}</Table.Cell>
             <Table.Cell>{PAYMENT_STATUS[payment.payment_status]}</Table.Cell>
             <Table.Cell>
