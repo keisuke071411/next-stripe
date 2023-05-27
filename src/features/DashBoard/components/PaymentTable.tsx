@@ -10,7 +10,7 @@ interface PaymentTableProps {
 }
 
 export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
-  const handleClick = async (invoiceId: string) => {
+  const createReceipt = async (invoiceId: string) => {
     try {
       const res = await stripeApi.getReceipt(invoiceId);
 
@@ -21,6 +21,18 @@ export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
       console.error(error);
     }
   };
+
+  // const createRepayment = async (paymentId: string) => {
+  //   try {
+  //     const res = await stripeApi.createRepayment(paymentId);
+
+  //     const data = await res.json();
+
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <Table
@@ -36,6 +48,7 @@ export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
         <Table.Column>ステータス</Table.Column>
         <Table.Column>作成日</Table.Column>
         <Table.Column>領収書</Table.Column>
+        {/* <Table.Column>返金</Table.Column> */}
       </Table.Header>
       <Table.Body>
         {paymentList.map((payment) => (
@@ -48,12 +61,22 @@ export const PaymentTable = ({ paymentList }: PaymentTableProps) => {
             </Table.Cell>
             <Table.Cell>
               <Button
-                color="warning"
-                onClick={() => handleClick(payment.invoice as string)}
+                color="success"
+                onClick={() => createReceipt(payment.invoice as string)}
+                disabled={!payment.invoice}
               >
                 作成
               </Button>
             </Table.Cell>
+            {/* <Table.Cell>
+              <Button
+                color="error"
+                onClick={() => createRepayment(payment.charge)}
+                disabled={payment.refunded}
+              >
+                申請
+              </Button>
+            </Table.Cell> */}
           </Table.Row>
         ))}
       </Table.Body>

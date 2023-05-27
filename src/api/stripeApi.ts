@@ -103,4 +103,17 @@ export class StripeApi {
 
     return res;
   }
+
+  async createRepayment(paymentId: string) {
+    const res = await fetch(`${this.apiUrl}/createRepayment`, {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "text/plain"
+      },
+      body: paymentId
+    });
+
+    return res;
+  }
 }
