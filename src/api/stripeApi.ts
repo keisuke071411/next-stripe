@@ -116,4 +116,17 @@ export class StripeApi {
 
     return res;
   }
+
+  async createInvoice(createInvoiceRequest: CreateCheckOutRequest) {
+    const res = await fetch(`${this.apiUrl}/createInvoice`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(createInvoiceRequest)
+    });
+
+    return res;
+  }
 }

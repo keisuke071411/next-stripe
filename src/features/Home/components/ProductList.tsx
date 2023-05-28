@@ -4,7 +4,7 @@ import { convertToMoney } from "~/utils/convertToMoney";
 
 interface ProductListProps {
   productList: StripeProduct[];
-  handleClick: (priceId: string) => Promise<void>;
+  handleClick: (product: StripeProduct) => Promise<void>;
 }
 
 export const ProductList = ({ productList, handleClick }: ProductListProps) => {
@@ -12,10 +12,7 @@ export const ProductList = ({ productList, handleClick }: ProductListProps) => {
     <Grid.Container gap={6} justify="flex-start">
       {productList.map((product) => (
         <Grid xs={6} sm={4} key={product.id}>
-          <Card
-            isPressable
-            onPressStart={() => handleClick(product.default_price as string)}
-          >
+          <Card isPressable onPressStart={() => handleClick(product)}>
             <Card.Body css={{ p: 0 }}>
               <Card.Image
                 src={product.images[0]}
