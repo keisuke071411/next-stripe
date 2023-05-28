@@ -12,6 +12,7 @@ import { ProductList } from "./components/ProductList";
 import { colors } from "styles/themes";
 import { HomePageProps } from "~/pages";
 import { LoadingScreen } from "~/components/shared/LoadingScreen";
+import { StripeProduct } from "~/pages/api/getProductList";
 
 export const HomePageTemplate = ({
   productList
@@ -21,18 +22,29 @@ export const HomePageTemplate = ({
 
   if (isLoading) return <LoadingScreen />;
 
-  const handleClick = async (priceId: string) => {
+  const handleClick = async (product: StripeProduct) => {
     try {
       if (!currentUser) throw new Error();
 
-      const res = await stripeApi.checkOutForStripe({
-        customerId: currentUser.stripeCustomerId,
-        priceId
-      });
+      if (product.priceList[0].type === "one_time") {
+        const res = await stripeApi.createInvoice({
+          customerId: currentUser.stripeCustomerId,
+          priceId: product.default_price as string
+        });
 
-      const stripeCheckOutSession = await res.json();
+        const stripeInvoiceSession = await res.json();
 
-      location.href = stripeCheckOutSession.url;
+        location.href = stripeInvoiceSession.url;
+      } else {
+        const res = await stripeApi.checkOutForStripe({
+          customerId: currentUser.stripeCustomerId,
+          priceId: product.default_price as string
+        });
+
+        const stripeCheckOutSession = await res.json();
+
+        location.href = stripeCheckOutSession.url;
+      }
     } catch (error) {
       console.log(error);
     }
