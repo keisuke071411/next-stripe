@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string, {
@@ -26,21 +26,21 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       )
     );
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripe.invoices.create({
       customer: req.body.customerId,
-      line_items: [
-        {
-          price: req.body.priceId,
-          quantity: 1
-        }
-      ],
-
-      mode: "subscription",
-      success_url: `${req.headers.origin}/dashboard`,
-      cancel_url: `${req.headers.origin}`
+      collection_method: "send_invoice",
+      days_until_due: 7
     });
 
-    res.status(200).json({ url: session.url });
+    await stripe.invoiceItems.create({
+      customer: req.body.customerId,
+      price: req.body.priceId,
+      invoice: session.id
+    });
+
+    const invoice = await stripe.invoices.sendInvoice(session.id);
+
+    res.status(200).json({ url: invoice.invoice_pdf });
   } catch (err: unknown) {
     console.log(err);
 
