@@ -37,7 +37,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
       mode: "subscription",
       success_url: `${req.headers.origin}/dashboard`,
-      cancel_url: `${req.headers.origin}/?canceled=true`
+      cancel_url: `${req.headers.origin}`
     });
 
     res.status(200).json({ url: session.url });
