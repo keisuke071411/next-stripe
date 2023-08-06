@@ -7,8 +7,8 @@
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 2020,
-    // "tsconfigRootDir": "__dirname",
-    "project": ["./tsconfig.json"]
+    "tsconfigRootDir": ".",
+    "project": "./tsconfig.json"
   },
   "plugins": ["@typescript-eslint"],
   "extends": [
@@ -20,13 +20,6 @@
     "quotes": ["error"],
     "max-len": ["error", { "code": 100000, "tabWidth": 2 }],
     "semi": ["error", "always"],
-    "comma-dangle": [
-      "error",
-      {
-        "arrays": "always-multiline",
-        "objects": "always-multiline"
-      }
-    ],
 
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/ban-ts-comment": 0,

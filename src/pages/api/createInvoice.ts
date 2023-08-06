@@ -42,7 +42,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({ url: invoice.invoice_pdf });
   } catch (err: unknown) {
-    console.log(err);
+    console.error(err);
 
     if (err instanceof Error) {
       res.status(500).json(err.message);

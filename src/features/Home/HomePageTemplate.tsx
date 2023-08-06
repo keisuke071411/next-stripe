@@ -46,7 +46,7 @@ export const HomePageTemplate = ({
         location.href = stripeCheckOutSession.url;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

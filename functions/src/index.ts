@@ -1,10 +1,16 @@
-import { Request, Response, https } from "firebase-functions";
+import { https } from "firebase-functions/v2";
 import { db } from "./handlers/firebase";
 import { CurrentUser } from "./types";
 
-exports.stripe_webhook = https.onRequest(
-  async (request: Request, response: Response): Promise<void> => {
+exports.stripeWebhook = https.onRequest(
+  { region: "asia-northeast1", memory: "256MiB" },
+  async (request, response): Promise<void> => {
     const event = request.body;
+
+    if (!event.type) {
+      response.status(500).json({ message: "event body is not found." }).end();
+      return;
+    }
 
     try {
       switch (event.type) {
@@ -14,11 +20,12 @@ exports.stripe_webhook = https.onRequest(
         //   response.json({ received: true });
         //   break;
         // }
-        case "customer.subscription.created": {
+        case "customer.subscription.deleted": {
           const stripeCustomerId = event.data.object.customer;
 
-          if (!stripeCustomerId)
+          if (!stripeCustomerId) {
             throw new Error("Failed to get stripeCustomerId");
+          }
 
           const snapshot = await db
             .collection("user")
@@ -30,10 +37,33 @@ exports.stripe_webhook = https.onRequest(
           const user = snapshot.docs.map((doc) => doc.data() as CurrentUser);
 
           await db.collection("user").doc(user[0].uid).update({
-            subscriptionStatus: "active",
+            subscriptionStatus: "cancel"
           });
 
-          response.json({ received: true });
+          response.status(200).json({ received: true });
+          break;
+        }
+        case "customer.subscription.created": {
+          const stripeCustomerId = event.data.object.customer;
+
+          if (!stripeCustomerId) {
+            throw new Error("Failed to get stripeCustomerId");
+          }
+
+          const snapshot = await db
+            .collection("user")
+            .where("stripeCustomerId", "==", stripeCustomerId)
+            .get();
+
+          if (!snapshot) throw new Error("Corresponding user does not exist");
+
+          const user = snapshot.docs.map((doc) => doc.data() as CurrentUser);
+
+          await db.collection("user").doc(user[0].uid).update({
+            subscriptionStatus: "active"
+          });
+
+          response.status(200).json({ received: true });
           break;
         }
         // case "customer.subscription.updated": {
@@ -56,11 +86,12 @@ exports.stripe_webhook = https.onRequest(
         // }
         default: {
           // 想定していないイベントが通知された場合
-          response.status(400).end();
+          response.status(400).json({ message: "event type failure." }).end();
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      response.status(500).json({ message: "Authenticate failure." }).end();
     }
   }
 );
