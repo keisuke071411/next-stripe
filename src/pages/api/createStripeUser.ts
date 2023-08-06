@@ -20,6 +20,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       res.status(500).json(err.message);
     }
 
-    console.log(err);
+    console.error(err);
   }
 }

@@ -39,7 +39,7 @@ export const DashBoardPageTemplate = ({
       const paymentList = await res.json();
       setPaymentList(paymentList.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
